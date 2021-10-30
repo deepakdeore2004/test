@@ -1,0 +1,42 @@
+name: 'Validate aws-auth'
+on:
+  push:
+    paths:
+      - 'clusters/**/input.yaml'
+
+jobs:
+  validate-aws-auth:
+    name: Validate aws-auth
+    runs-on: ubuntu-latest
+    steps:
+    - name: 'checkout code'
+      uses: 'actions/checkout@v2'
+
+    - id: files
+      uses: jitterbit/get-changed-files@v1
+      
+    - name: 'Validate aws-auth'
+      run: |
+        added_files="${{ steps.files.outputs.added }}"
+        modified_files="${{ steps.files.outputs.modified }}"
+        if [[ ! -z "$added_files" ]];
+        then
+          for changed_file in ${{ steps.files.outputs.added }}; do
+            if [[ "$(basename $changed_file)" == "aws-auth.yaml" && -n $(echo "$changed_file" |grep "clusters/") ]]; ### Change to "clusters/eks"
+            then
+              echo "Validating $changed_file"
+              cat $changed_file
+            fi
+          done
+        fi
+        if [[ ! -z "$modified_files" ]];
+        then
+          for changed_file in ${{ steps.files.outputs.modified }}; do
+            if [[ "$(basename $changed_file)" == "aws-auth.yaml" && -n $(echo "$changed_file" |grep "clusters/") ]]; ### Change to "clusters/eks"
+            then
+              echo "Validating $changed_file"
+              cat $changed_file
+            fi
+          done
+        fi
+
