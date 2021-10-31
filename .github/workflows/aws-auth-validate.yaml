@@ -16,6 +16,7 @@ jobs:
       uses: jitterbit/get-changed-files@v1
       
     - name: 'Validate aws-auth'
+      continue-on-error: true
       run: |
         added_files="${{ steps.files.outputs.added }}"
         modified_files="${{ steps.files.outputs.modified }}"
