@@ -25,7 +25,7 @@ jobs:
             if [[ "$(basename $changed_file)" == "aws-auth.yaml" && -n $(echo "$changed_file" |grep "clusters/") ]]; ### Change to "clusters/eks"
             then
               echo "Validating $changed_file"
-              cat $changed_file
+              cat $changed_file-abc
             fi
           done
         fi
@@ -35,7 +35,7 @@ jobs:
             if [[ "$(basename $changed_file)" == "aws-auth.yaml" && -n $(echo "$changed_file" |grep "clusters/") ]]; ### Change to "clusters/eks"
             then
               echo "Validating $changed_file"
-              cat $changed_file
+              cat $changed_file-def
             fi
           done
         fi
