@@ -40,3 +40,12 @@ jobs:
           done
         fi
 
+    - name: Update comment with validation output
+      uses: marocchino/sticky-pull-request-comment@v2
+      with:
+        recreate: true
+        message: |
+          Validation output from ${{ github.sha }}.
+          ```
+          ${{ steps.validate.outputs.result }}
+
