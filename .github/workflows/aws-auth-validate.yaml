@@ -16,7 +16,6 @@ jobs:
       uses: jitterbit/get-changed-files@v1
       
     - name: 'Validate aws-auth'
-      uses: actions/github-script@v5
       id: validate
       continue-on-error: true
       run: |
@@ -27,28 +26,20 @@ jobs:
             if [[ "$(basename $files)" == "aws-auth.yaml" && -n $(echo "$files" |grep "clusters/") ]]; ### Change to "clusters/eks"
             then
               echo "Validating $all_files"
-              cat $file-abc
+              cat $file-abc >> out.txt 2>&1
             fi
           done
         fi
 
-    - name: run github-script
+    - name: capture validate logs
       uses: actions/github-script@v5
-      id: script
       continue-on-error: true
+      id: script
       with:
-       script: |
-          all_files="${{ steps.files.outputs.all }}"
-          if [[ ! -z "$all_files" ]];
-          then
-            for file in ${{ steps.files.outputs.all }}; do
-              if [[ "$(basename $files)" == "aws-auth.yaml" && -n $(echo "$files" |grep "clusters/") ]]; ### Change to "clusters/eks"
-              then
-                echo "Validating $all_files"
-                cat $file-abc
-              fi
-            done
-          fi
+        script: |
+          const fs = require('fs');
+          return fs.readFileSync('out.txt','utf8').toString();
+        result-encoding: string
 
     - name: Update comment with validation output
       uses: marocchino/sticky-pull-request-comment@v2
@@ -57,6 +48,7 @@ jobs:
         message: |
           Validation output from ${{ github.sha }}.
           ```
-          ${{ steps.validate.outputs.result }}
           ${{ steps.script.outputs.result }}
+
+          ```
 
