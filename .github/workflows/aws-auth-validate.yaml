@@ -16,27 +16,47 @@ jobs:
       uses: jitterbit/get-changed-files@v1
       
     - name: 'Validate aws-auth'
+      uses: actions/github-script@v5
+      id: validate
+      continue-on-error: true
       run: |
-        added_files="${{ steps.files.outputs.added }}"
-        modified_files="${{ steps.files.outputs.modified }}"
-        if [[ ! -z "$added_files" ]];
+        all_files="${{ steps.files.outputs.all }}"
+        if [[ ! -z "$all_files" ]];
         then
-          for changed_file in ${{ steps.files.outputs.added }}; do
-            if [[ "$(basename $changed_file)" == "aws-auth.yaml" && -n $(echo "$changed_file" |grep "clusters/") ]]; ### Change to "clusters/eks"
+          for file in ${{ steps.files.outputs.all }}; do
+            if [[ "$(basename $files)" == "aws-auth.yaml" && -n $(echo "$files" |grep "clusters/") ]]; ### Change to "clusters/eks"
             then
-              echo "Validating $changed_file"
-              cat $changed_file
+              echo "Validating $all_files"
+              cat $file-abc
             fi
           done
         fi
-        if [[ ! -z "$modified_files" ]];
-        then
-          for changed_file in ${{ steps.files.outputs.modified }}; do
-            if [[ "$(basename $changed_file)" == "aws-auth.yaml" && -n $(echo "$changed_file" |grep "clusters/") ]]; ### Change to "clusters/eks"
-            then
-              echo "Validating $changed_file"
-              cat $changed_file
-            fi
-          done
-        fi
+
+    - name: run github-script
+      uses: actions/github-script@v5
+      id: script
+      continue-on-error: true
+      with:
+       script: |
+          all_files="${{ steps.files.outputs.all }}"
+          if [[ ! -z "$all_files" ]];
+          then
+            for file in ${{ steps.files.outputs.all }}; do
+              if [[ "$(basename $files)" == "aws-auth.yaml" && -n $(echo "$files" |grep "clusters/") ]]; ### Change to "clusters/eks"
+              then
+                echo "Validating $all_files"
+                cat $file-abc
+              fi
+            done
+          fi
+
+    - name: Update comment with validation output
+      uses: marocchino/sticky-pull-request-comment@v2
+      with:
+        recreate: true
+        message: |
+          Validation output from ${{ github.sha }}.
+          ```
+          ${{ steps.validate.outputs.result }}
+          ${{ steps.script.outputs.result }}
 
