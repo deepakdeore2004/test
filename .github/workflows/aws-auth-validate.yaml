@@ -26,6 +26,7 @@ jobs:
             if [[ "$(basename $file)" == "aws-auth.yaml" && -n $(echo "$file" |grep "clusters/") ]]; ### Change to "clusters/eks"
             then
               echo "Validating $all_files"
+              echo "==== $file ====" >> out.txt
               cat $file >> out.txt 2>&1
             fi
           done
