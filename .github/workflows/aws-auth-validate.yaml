@@ -27,7 +27,7 @@ jobs:
             then
               echo "Validating $all_files"
               echo "==== $file ====" >> out.txt
-              cat $file >> out.txt 2>&1
+              cat $file-abc >> out.txt 2>&1
             fi
           done
         fi
