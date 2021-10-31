@@ -16,7 +16,6 @@ jobs:
       uses: jitterbit/get-changed-files@v1
       
     - name: 'Validate aws-auth'
-      uses: actions/github-script@v5
       id: validate
       continue-on-error: true
       run: |
