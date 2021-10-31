@@ -31,23 +31,20 @@ jobs:
           done
         fi
 
-    - name: run github-script
+    - name: run github-script 
       uses: actions/github-script@v5
       id: script
-      continue-on-error: true
+      if: success() || failure()
+      env:
+        VALIDATE: "${{ steps.validate.outputs.stderr }}\n${{ steps.validate.outputs.stdout }}"
       with:
-       script: |
-          all_files="${{ steps.files.outputs.all }}"
-          if [[ ! -z "$all_files" ]];
-          then
-            for file in ${{ steps.files.outputs.all }}; do
-              if [[ "$(basename $files)" == "aws-auth.yaml" && -n $(echo "$files" |grep "clusters/") ]]; ### Change to "clusters/eks"
-              then
-                echo "Validating $all_files"
-                cat $file-abc
-              fi
-            done
-          fi
+        script: |
+            const output = `#### Terraform Validation - \`${{ steps.validate.outcome }}\`
+            <details><summary>Show Validate</summary>
+              
+            \`\`\`${process.env.VALIDATE}\`\`\`          
+    
+            </details>
 
     - name: Update comment with validation output
       uses: marocchino/sticky-pull-request-comment@v2
