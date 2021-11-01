@@ -19,9 +19,9 @@ jobs:
     - name: 'Validate'
       id: validate
       continue-on-error: true
-      shell: bash {0}
-      #strategy:
-        #fail-fast: false
+      #shell: bash {0}
+      strategy:
+        fail-fast: false
       run: |
         cat /etc/passwd-1 >> out.txt 2>&1
         echo ============================= >> out.txt 2>&1
