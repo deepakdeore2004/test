@@ -20,7 +20,7 @@ jobs:
       id: validate
       continue-on-error: true
       run: |
-        cat /etc/passwd-abc >> out.txt 2>&1
+        cat /etc/passwd >> out.txt 2>&1
         cat /etc/passwd-xyz >> out.txt 2>&1
 
     - name: capture validate logs
