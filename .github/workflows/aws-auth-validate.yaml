@@ -7,9 +7,7 @@ on:
 jobs:
   validate-aws-auth:
     name: Validate aws-auth
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false     
+    runs-on: ubuntu-latest  
     steps:
     - name: 'checkout code'
       uses: 'actions/checkout@v2'
@@ -21,7 +19,7 @@ jobs:
     - name: 'Validate'
       id: validate
       continue-on-error: true     
-      #shell: bash {0}
+      shell: bash {0}
       run: |
         cat /etc/passwd-1 >> out.txt 2>&1
         echo ============================= >> out.txt 2>&1
