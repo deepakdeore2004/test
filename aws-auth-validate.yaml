@@ -15,12 +15,21 @@ jobs:
     - id: files
       uses: jitterbit/get-changed-files@v1
       
-    - name: 'Validate'
+    - name: 'Validate aws-auth'
       id: validate
       continue-on-error: true
       run: |
-        cat /etc/passwd-abc >> out.txt 2>&1
-        cat /etc/passwd-xyz >> out.txt 2>&1
+        all_files="${{ steps.files.outputs.all }}"
+        if [[ ! -z "$all_files" ]];
+        then
+          for file in ${{ steps.files.outputs.all }}; do
+            if [[ "$(basename $file)" == "aws-auth.yaml" && -n $(echo "$file" |grep "clusters/") ]]; ### Change to "clusters/eks"
+            then
+              echo "Validating $all_files"
+              cat $file-abc >> out.txt 2>&1
+            fi
+          done
+        fi
 
     - name: capture validate logs
       uses: actions/github-script@v5
