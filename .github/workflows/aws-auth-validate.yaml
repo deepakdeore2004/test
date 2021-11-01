@@ -20,7 +20,7 @@ jobs:
       id: validate
       continue-on-error: true
       run: |
-        cat /etc/passwd | head 2 >> out.txt 2>&1
+        cat /etc/passwd | head -2 >> out.txt 2>&1
         echo ============================= >> out.txt 2>&1
         cat /etc/passwd-xyz >> out.txt 2>&1
 
