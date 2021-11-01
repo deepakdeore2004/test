@@ -39,7 +39,7 @@ jobs:
       with:
         recreate: true
         message: |
-          Validation output from ${{ github.event.pull_request.head.sha }}.
+          Validation output
           ```
           ${{ steps.script.outputs.result }}
 
