@@ -14,6 +14,7 @@ jobs:
 
     - id: files
       uses: jitterbit/get-changed-files@v1
+      continue-on-error: true
       
     - name: 'Validate'
       id: validate
