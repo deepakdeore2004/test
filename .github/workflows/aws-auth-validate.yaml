@@ -40,7 +40,7 @@ jobs:
       with:
         recreate: true
         message: |
-          Validation output, from ${{ github.sha }}, commit by: ${{ github.actor }}.
+          Validation output, from ${{github.event.pull_request.head.sha}}, commit by: ${{ github.actor }}.
           ```
           ${{ steps.script.outputs.result }}
 
