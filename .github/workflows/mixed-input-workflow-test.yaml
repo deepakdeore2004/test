@@ -20,4 +20,4 @@ jobs:
         with:
           output: ' '
           # optional PR number to compare
-          prNumber: 2
+          prNumber: ${{ github.event.inputs.prNumber }}
