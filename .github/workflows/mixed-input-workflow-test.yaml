@@ -35,30 +35,30 @@ jobs:
           echo '${{ steps.file_changes.outputs.files_added}}'
           echo '${{ steps.file_changes.outputs.files_removed}}'
 
-    - name: 'Find cloud, env and cluster name'
-      id: get-cluster-info
-      # continue on error so another step can add error output in a comment
-      # separate step later will mark this as failed if not successful
-      continue-on-error: true
-      # "bash {0}" will make all commands run regardless of any one command fails
-      shell: bash {0}
-      run: |
-        all_files="${{ steps.file_changes.outputs.files }}"
-        if [[ ! -z "$all_files" ]];
-        then
-          uniq_clusters=$(echo $all_files | tr ' ' '\n' | grep "clusters" |grep "istio" | cut -f1-5 -d/ | sort | uniq | tr '\n' ' ')
+      - name: 'Find cloud, env and cluster name'
+        id: get-cluster-info
+        # continue on error so another step can add error output in a comment
+        # separate step later will mark this as failed if not successful
+        continue-on-error: true
+        # "bash {0}" will make all commands run regardless of any one command fails
+        shell: bash {0}
+        run: |
+          all_files="${{ steps.file_changes.outputs.files }}"
+          if [[ ! -z "$all_files" ]];
+          then
+            uniq_clusters=$(echo $all_files | tr ' ' '\n' | grep "clusters" |grep "istio" | cut -f1-5 -d/ | sort | uniq | tr '\n' ' ')
 
-          for file in $uniq_clusters; do
-            export CLOUD=$(echo $file | cut -f2 -d/)
-            export ENV=$(echo $file | cut -f3 -d/)
-            export REGION=$(echo $file | cut -f4 -d/)
-            export CLUSTER=$(echo $file | cut -f5 -d/)
+            for file in $uniq_clusters; do
+              export CLOUD=$(echo $file | cut -f2 -d/)
+              export ENV=$(echo $file | cut -f3 -d/)
+              export REGION=$(echo $file | cut -f4 -d/)
+              export CLUSTER=$(echo $file | cut -f5 -d/)
 
-            echo CLOUD: $CLOUD
-            echo ENV: $ENV
-            echo REGION: $REGION
-            echo CLUSTER: $CLUSTER
-            echo ===========
-          done
-        fi
+              echo CLOUD: $CLOUD
+              echo ENV: $ENV
+              echo REGION: $REGION
+              echo CLUSTER: $CLUSTER
+              echo ===========
+            done
+          fi
 
