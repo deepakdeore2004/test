@@ -18,9 +18,43 @@ on:
         type: environment
 
 jobs:
-  greet:
-    runs-on: ubuntu-latest
+  validate-aws-auth:
+    name: istio-sanity-test
+#    runs-on: cicd-dev
 
     steps:
-    - name: Send greeting
-      run: echo "${{ github.event.inputs.message }} ${{ fromJSON('["", ""]')[github.event.inputs.use-emoji == 'true'] }} ${{ github.event.inputs.name }}"
+    - name: 'checkout code'
+      uses: 'actions/checkout@v2'
+
+    - name: Identify all files in PR
+      id: files
+      uses: jitterbit/get-changed-files@v1
+      # ignore error: https://github.com/jitterbit/get-changed-files/issues/11
+      continue-on-error: true
+
+    - name: 'Find cloud, env and cluster name'
+      id: get-cluster-info
+      # continue on error so another step can add error output in a comment
+      # separate step later will mark this as failed if not successful
+      continue-on-error: true
+      # "bash {0}" will make all commands run regardless of any one command fails
+      shell: bash {0}
+      run: |
+        all_files="${{ steps.files.outputs.all }}"
+        if [[ ! -z "$all_files" ]];
+        then
+          uniq_clusters=$(echo $all_files | tr ' ' '\n' | grep "clusters" |grep "istio" | cut -f1-5 -d/ | sort | uniq | tr '\n' ' ')
+
+          for file in $uniq_clusters; do
+            export CLOUD=$(echo $file | cut -f2 -d/)
+            export ENV=$(echo $file | cut -f3 -d/)
+            export REGION=$(echo $file | cut -f4 -d/)
+            export CLUSTER=$(echo $file | cut -f5 -d/)
+
+            echo CLOUD: $CLOUD
+            echo ENV: $ENV
+            echo REGION: $REGION
+            echo CLUSTER: $CLUSTER
+            echo ===========
+          done
+        fi
