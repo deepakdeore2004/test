@@ -19,10 +19,12 @@ jobs:
         uses: trilom/file-changes-action@v1.2.3
         with:
           output: ' '
+          fileOutput: ' '
           # optional PR number to compare
           prNumber: ${{ github.event.inputs.prNumber }}
           
       - name: test
+        continue-on-error: true
         run: |
           cat $HOME/files.txt
           cat $HOME/files.json
