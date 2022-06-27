@@ -3,7 +3,6 @@ name: Mixed inputs test workflow
 on:
   workflow_dispatch:
     inputs:
-      name:
       prNumber:
         required: true
 env:
